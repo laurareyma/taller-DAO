@@ -1,6 +1,6 @@
 package edu.unisabana.dyas.sampleprj.dao.mybatis.mappers;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 

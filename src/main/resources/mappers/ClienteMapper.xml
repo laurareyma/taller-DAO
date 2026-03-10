@@ -59,13 +59,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         c.vetado as cli_vetado,
 
         ir.ITEMS_id as ir_id,
-        ir.fechainiciorenta as ir_fechainicio,
-        ir.fechafinrenta as ir_fechafin,
+        coalesce(strftime('%Y-%m-%d %H:%M:%f', ir.fechainiciorenta), strftime('%Y-%m-%d %H:%M:%f', ir.fechainiciorenta/1000, 'unixepoch')) as ir_fechainicio,
+        coalesce(strftime('%Y-%m-%d %H:%M:%f', ir.fechafinrenta), strftime('%Y-%m-%d %H:%M:%f', ir.fechafinrenta/1000, 'unixepoch')) as ir_fechafin,
 
         i.id as item_id,
         i.nombre as item_nombre,
         i.descripcion as item_descripcion,
-        i.fechalanzamiento as item_fechalanzamiento,
+        coalesce(strftime('%Y-%m-%d %H:%M:%f', i.fechalanzamiento), strftime('%Y-%m-%d %H:%M:%f', i.fechalanzamiento/1000, 'unixepoch')) as item_fechalanzamiento,
         i.tarifaxdia as item_tarifaxdia,
         i.formatorenta as item_formatorenta,
         i.genero as item_genero,
@@ -105,13 +105,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         c.vetado as cli_vetado,
 
         ir.ITEMS_id as ir_id,
-        ir.fechainiciorenta as ir_fechainicio,
-        ir.fechafinrenta as ir_fechafin,
+        coalesce(strftime('%Y-%m-%d %H:%M:%f', ir.fechainiciorenta), strftime('%Y-%m-%d %H:%M:%f', ir.fechainiciorenta/1000, 'unixepoch')) as ir_fechainicio,
+        coalesce(strftime('%Y-%m-%d %H:%M:%f', ir.fechafinrenta), strftime('%Y-%m-%d %H:%M:%f', ir.fechafinrenta/1000, 'unixepoch')) as ir_fechafin,
 
         i.id as item_id,
         i.nombre as item_nombre,
         i.descripcion as item_descripcion,
-        i.fechalanzamiento as item_fechalanzamiento,
+        coalesce(strftime('%Y-%m-%d %H:%M:%f', i.fechalanzamiento), strftime('%Y-%m-%d %H:%M:%f', i.fechalanzamiento/1000, 'unixepoch')) as item_fechalanzamiento,
         i.tarifaxdia as item_tarifaxdia,
         i.formatorenta as item_formatorenta,
         i.genero as item_genero,
