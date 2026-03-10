@@ -2,6 +2,8 @@
 ### Diseño y Arquitectura de Software
 #### Tecnologías de persistencia - Frameworks de Persistencia - Introducción a MyBatis
 
+> **Trabajo realizado por:** Maria Alejandra Cabrera, Juan Esteban Ramirez y Laura Vanesa Reyes
+
 En este taller se utilizará un 'framework' de persistencia. La base de datos que se utilizará tiene los siguientes parámetros:
 
     host: local/taller
