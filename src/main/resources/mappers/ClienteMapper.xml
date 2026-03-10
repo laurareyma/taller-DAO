@@ -4,35 +4,11 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="edu.unisabana.dyas.samples.dao.mybatis.mappers.ClienteMapper">
+<mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ClienteMapper">
 
     <!-- ================================================= -->
     <!-- RESULT MAPS -->
     <!-- ================================================= -->
-
-    <resultMap id="TipoItemResult" type="TipoItem">
-        <id property="id" column="tipo_id"/>
-        <result property="descripcion" column="tipo_descripcion"/>
-    </resultMap>
-
-
-    <resultMap id="ItemResult" type="Item">
-
-        <id property="id" column="item_id"/>
-
-        <result property="nombre" column="item_nombre"/>
-        <result property="descripcion" column="item_descripcion"/>
-        <result property="fechalanzamiento" column="item_fecha"/>
-        <result property="tarifaxdia" column="item_tarifa"/>
-        <result property="formatorenta" column="item_formato"/>
-        <result property="genero" column="item_genero"/>
-
-        <association property="tipoItem"
-                     javaType="TipoItem"
-                     resultMap="TipoItemResult"/>
-
-    </resultMap>
-
 
     <resultMap id="ItemRentadoResult" type="ItemRentado">
 
@@ -42,8 +18,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fechafinrenta" column="ir_fechafin"/>
 
         <association property="item"
-                     javaType="Item"
-                     resultMap="ItemResult"/>
+                 javaType="Item"
+                 resultMap="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ItemMapper.ItemResult"/>
 
     </resultMap>
 
@@ -58,7 +34,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="email" column="cli_email"/>
         <result property="vetado" column="cli_vetado"/>
 
-        <collection property="itemsRentados"
+        <collection property="rentados"
                     ofType="ItemRentado"
                     resultMap="ItemRentadoResult"/>
 
@@ -89,9 +65,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         i.id as item_id,
         i.nombre as item_nombre,
         i.descripcion as item_descripcion,
-        i.fechalanzamiento as item_fecha,
-        i.tarifaxdia as item_tarifa,
-        i.formatorenta as item_formato,
+        i.fechalanzamiento as item_fechalanzamiento,
+        i.tarifaxdia as item_tarifaxdia,
+        i.formatorenta as item_formatorenta,
         i.genero as item_genero,
 
         ti.id as tipo_id,
@@ -135,9 +111,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         i.id as item_id,
         i.nombre as item_nombre,
         i.descripcion as item_descripcion,
-        i.fechalanzamiento as item_fecha,
-        i.tarifaxdia as item_tarifa,
-        i.formatorenta as item_formato,
+        i.fechalanzamiento as item_fechalanzamiento,
+        i.tarifaxdia as item_tarifaxdia,
+        i.formatorenta as item_formatorenta,
         i.genero as item_genero,
 
         ti.id as tipo_id,
