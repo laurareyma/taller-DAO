@@ -1,123 +1,186 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
-<mapper namespace="edu.unisabana.dyas.sampleprj.dao.mybatis.mappers.ClienteMapper">
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-    <!-- ============================================================
-         ResultMap para TipoItem
-         Tabla: VI_TIPOITEM  →  columnas con prefijo "ti_"
-    ============================================================ -->
-    <resultMap type="TipoItem" id="TipoItemResult">
-        <id     property="id"          column="ti_id"/>
-        <result property="descripcion"  column="ti_descripcion"/>
+<mapper namespace="edu.unisabana.dyas.samples.dao.mybatis.mappers.ClienteMapper">
+
+    <!-- ================================================= -->
+    <!-- RESULT MAPS -->
+    <!-- ================================================= -->
+
+    <resultMap id="TipoItemResult" type="TipoItem">
+        <id property="id" column="tipo_id"/>
+        <result property="descripcion" column="tipo_descripcion"/>
     </resultMap>
 
-    <!-- ============================================================
-         ResultMap para Item
-         Tabla: VI_ITEMS  →  columnas con prefijo "i_"
-         Tiene asociación uno-a-uno con TipoItem (prefijo "ti_")
-    ============================================================ -->
-    <resultMap type="Item" id="ItemResult">
-        <id     property="id"               column="i_id"/>
-        <result property="nombre"           column="i_nombre"/>
-        <result property="descripcion"      column="i_descripcion"/>
-        <result property="fechaLanzamiento" column="i_fechalanzamiento"/>
-        <result property="tarifaxDia"       column="i_tarifaxdia"/>
-        <result property="formatoRenta"     column="i_formatorenta"/>
-        <result property="genero"           column="i_genero"/>
-        <association property="tipo" javaType="TipoItem" resultMap="TipoItemResult" columnPrefix="ti_"/>
+
+    <resultMap id="ItemResult" type="Item">
+
+        <id property="id" column="item_id"/>
+
+        <result property="nombre" column="item_nombre"/>
+        <result property="descripcion" column="item_descripcion"/>
+        <result property="fechalanzamiento" column="item_fecha"/>
+        <result property="tarifaxdia" column="item_tarifa"/>
+        <result property="formatorenta" column="item_formato"/>
+        <result property="genero" column="item_genero"/>
+
+        <association property="tipoItem"
+                     javaType="TipoItem"
+                     resultMap="TipoItemResult"/>
+
     </resultMap>
 
-    <!-- ============================================================
-         ResultMap para ItemRentado
-         Tabla: VI_ITEMRENTADO  →  columnas con prefijo "ir_"
-         Tiene asociación uno-a-uno con Item (prefijo "i_")
-    ============================================================ -->
-    <resultMap type="ItemRentado" id="ItemRentadoResult">
-        <id     property="id"               column="ir_id"/>
-        <result property="fechainiciorenta" column="ir_fechainiciorenta"/>
-        <result property="fechafinrenta"    column="ir_fechafinrenta"/>
-        <association property="item" javaType="Item" resultMap="ItemResult" columnPrefix="i_"/>
+
+    <resultMap id="ItemRentadoResult" type="ItemRentado">
+
+        <id property="id" column="ir_id"/>
+
+        <result property="fechainiciorenta" column="ir_fechainicio"/>
+        <result property="fechafinrenta" column="ir_fechafin"/>
+
+        <association property="item"
+                     javaType="Item"
+                     resultMap="ItemResult"/>
+
     </resultMap>
 
-    <!-- ============================================================
-         ResultMap para Cliente
-         Tabla: VI_CLIENTES  →  columnas sin prefijo (tabla raíz)
-         Tiene colección uno-a-muchos de ItemRentado (prefijo "ir_")
-    ============================================================ -->
-    <resultMap type="Cliente" id="ClienteResult">
-        <id     property="documento"  column="documento"/>
-        <result property="nombre"     column="nombre"/>
-        <result property="telefono"   column="telefono"/>
-        <result property="direccion"  column="direccion"/>
-        <result property="email"      column="email"/>
-        <result property="vetado"     column="vetado"/>
-        <collection property="rentados"
+
+    <resultMap id="ClienteResult" type="Cliente">
+
+        <id property="documento" column="cli_documento"/>
+
+        <result property="nombre" column="cli_nombre"/>
+        <result property="telefono" column="cli_telefono"/>
+        <result property="direccion" column="cli_direccion"/>
+        <result property="email" column="cli_email"/>
+        <result property="vetado" column="cli_vetado"/>
+
+        <collection property="itemsRentados"
                     ofType="ItemRentado"
-                    resultMap="ItemRentadoResult"
-                    columnPrefix="ir_"/>
+                    resultMap="ItemRentadoResult"/>
+
     </resultMap>
 
-    <!-- ============================================================
-         Query: consultarClientes — trae TODOS los clientes con sus items
-         Alias con prefijos anidados para evitar colisión de nombres
-    ============================================================ -->
-    <select id="consultarClientes" resultMap="ClienteResult">
+
+    <!-- ================================================= -->
+    <!-- CONSULTAR TODOS LOS CLIENTES -->
+    <!-- ================================================= -->
+
+    <select id="consultarClientes"
+            parameterType="map"
+            resultMap="ClienteResult">
+
         SELECT
-            c.nombre,
-            c.documento,
-            c.telefono,
-            c.direccion,
-            c.email,
-            c.vetado,
-            ir.CLIENTES_documento  AS ir_id,
-            ir.fechainiciorenta    AS ir_fechainiciorenta,
-            ir.fechafinrenta       AS ir_fechafinrenta,
-            i.id                   AS ir_i_id,
-            i.nombre               AS ir_i_nombre,
-            i.descripcion          AS ir_i_descripcion,
-            i.fechalanzamiento     AS ir_i_fechalanzamiento,
-            i.tarifaxdia           AS ir_i_tarifaxdia,
-            i.formatorenta         AS ir_i_formatorenta,
-            i.genero               AS ir_i_genero,
-            ti.id                  AS ir_i_ti_id,
-            ti.descripcion         AS ir_i_ti_descripcion
-        FROM VI_CLIENTES AS c
-        LEFT JOIN VI_ITEMRENTADO AS ir ON c.documento = ir.CLIENTES_documento
-        LEFT JOIN VI_ITEMS       AS i  ON ir.ITEMS_id = i.id
-        LEFT JOIN VI_TIPOITEM    AS ti ON i.TIPOITEM_id = ti.id
+
+        c.nombre as cli_nombre,
+        c.documento as cli_documento,
+        c.telefono as cli_telefono,
+        c.direccion as cli_direccion,
+        c.email as cli_email,
+        c.vetado as cli_vetado,
+
+        ir.ITEMS_id as ir_id,
+        ir.fechainiciorenta as ir_fechainicio,
+        ir.fechafinrenta as ir_fechafin,
+
+        i.id as item_id,
+        i.nombre as item_nombre,
+        i.descripcion as item_descripcion,
+        i.fechalanzamiento as item_fecha,
+        i.tarifaxdia as item_tarifa,
+        i.formatorenta as item_formato,
+        i.genero as item_genero,
+
+        ti.id as tipo_id,
+        ti.descripcion as tipo_descripcion
+
+        FROM VI_CLIENTES c
+
+        LEFT JOIN VI_ITEMRENTADO ir
+        ON c.documento = ir.CLIENTES_documento
+
+        LEFT JOIN VI_ITEMS i
+        ON ir.ITEMS_id = i.id
+
+        LEFT JOIN VI_TIPOITEM ti
+        ON i.TIPOITEM_id = ti.id
+
     </select>
 
-    <!-- ============================================================
-         Query: consultarCliente — trae UN cliente por documento
-    ============================================================ -->
-    <select id="consultarCliente" parameterType="int" resultMap="ClienteResult">
+
+    <!-- ================================================= -->
+    <!-- CONSULTAR CLIENTE POR ID -->
+    <!-- ================================================= -->
+
+    <select id="consultarCliente"
+            parameterType="map"
+            resultMap="ClienteResult">
+
         SELECT
-            c.nombre,
-            c.documento,
-            c.telefono,
-            c.direccion,
-            c.email,
-            c.vetado,
-            ir.CLIENTES_documento  AS ir_id,
-            ir.fechainiciorenta    AS ir_fechainiciorenta,
-            ir.fechafinrenta       AS ir_fechafinrenta,
-            i.id                   AS ir_i_id,
-            i.nombre               AS ir_i_nombre,
-            i.descripcion          AS ir_i_descripcion,
-            i.fechalanzamiento     AS ir_i_fechalanzamiento,
-            i.tarifaxdia           AS ir_i_tarifaxdia,
-            i.formatorenta         AS ir_i_formatorenta,
-            i.genero               AS ir_i_genero,
-            ti.id                  AS ir_i_ti_id,
-            ti.descripcion         AS ir_i_ti_descripcion
-        FROM VI_CLIENTES AS c
-        LEFT JOIN VI_ITEMRENTADO AS ir ON c.documento = ir.CLIENTES_documento
-        LEFT JOIN VI_ITEMS       AS i  ON ir.ITEMS_id = i.id
-        LEFT JOIN VI_TIPOITEM    AS ti ON i.TIPOITEM_id = ti.id
-        WHERE c.documento = #{id}
+
+        c.nombre as cli_nombre,
+        c.documento as cli_documento,
+        c.telefono as cli_telefono,
+        c.direccion as cli_direccion,
+        c.email as cli_email,
+        c.vetado as cli_vetado,
+
+        ir.ITEMS_id as ir_id,
+        ir.fechainiciorenta as ir_fechainicio,
+        ir.fechafinrenta as ir_fechafin,
+
+        i.id as item_id,
+        i.nombre as item_nombre,
+        i.descripcion as item_descripcion,
+        i.fechalanzamiento as item_fecha,
+        i.tarifaxdia as item_tarifa,
+        i.formatorenta as item_formato,
+        i.genero as item_genero,
+
+        ti.id as tipo_id,
+        ti.descripcion as tipo_descripcion
+
+        FROM VI_CLIENTES c
+
+        LEFT JOIN VI_ITEMRENTADO ir
+        ON c.documento = ir.CLIENTES_documento
+
+        LEFT JOIN VI_ITEMS i
+        ON ir.ITEMS_id = i.id
+
+        LEFT JOIN VI_TIPOITEM ti
+        ON i.TIPOITEM_id = ti.id
+
+        WHERE c.documento = #{idcli}
+
     </select>
+
+
+    <!-- ================================================= -->
+    <!-- AGREGAR ITEM RENTADO -->
+    <!-- ================================================= -->
+
+    <insert id="agregarItemRentadoACliente" parameterType="map">
+
+        INSERT INTO VI_ITEMRENTADO
+        (
+        CLIENTES_documento,
+        ITEMS_id,
+        fechainiciorenta,
+        fechafinrenta
+        )
+
+        VALUES
+        (
+        #{doc},
+        #{itemid},
+        #{fechaini},
+        #{fechafin}
+        )
+
+    </insert>
 
 </mapper>
